@@ -19,7 +19,10 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("Inicial"),
+              Text("Inicial",
+                  style: TextStyle(
+                    color: Colors.blue,
+                  )),
             ],
           ),
         ),
