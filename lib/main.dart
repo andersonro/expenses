@@ -12,13 +12,21 @@ class MyApp extends StatelessWidget {
       title: 'Expenses',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        primarySwatch: Colors.purple,
+        primaryColor: Colors.purple,
+        //brightness: Brightness.light,
+        //colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          backgroundColor: Colors.purple,
+          foregroundColor: Colors.white,
+        ),
         appBarTheme: const AppBarTheme(
-            color: Colors.blue,
+            color: Colors.purple,
             titleTextStyle: TextStyle(
               color: Colors.white,
               fontSize: 20,
-            )),
+            ),
+            iconTheme: IconThemeData(color: Colors.white)),
         useMaterial3: true,
       ),
       home: const HomePage(),

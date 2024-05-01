@@ -1,8 +1,8 @@
-import 'dart:ffi';
 import 'dart:math';
 
 import 'package:expenses/model/transaction_model.dart';
 import 'package:expenses/view/card_transaction_widget.dart';
+import 'package:expenses/view/chart_card_widget.dart';
 import 'package:expenses/view/transaction_form_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -16,13 +16,13 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final List<TransactionModel> _transactions = [];
 
-  loadTransactions() {
-    for (var i = 1; i < 10; i++) {
+  _loadTransactions() {
+    for (var i = 1; i < 15; i++) {
       _transactions.add(TransactionModel(
           id: '$i-',
           title: 'Teste $i',
           value: (13.10 * i),
-          date: DateTime.now()));
+          date: DateTime.now().subtract(Duration(days: i))));
     }
   }
 
@@ -34,12 +34,27 @@ class _HomePageState extends State<HomePage> {
           value: vValue,
           date: DateTime.now()));
     });
+    Navigator.of(context).pop();
+  }
+
+  List<TransactionModel> get _recentTransactions {
+    return _transactions.where((element) {
+      return element.date
+          .isAfter(DateTime.now().subtract(const Duration(days: 7)));
+    }).toList();
+  }
+
+  _onShowModalTransactionForm(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (_) => TransactionFormWidget(addTransaction: addTransaction),
+    );
   }
 
   @override
   void initState() {
     super.initState();
-    loadTransactions();
+    _loadTransactions();
   }
 
   @override
@@ -47,56 +62,49 @@ class _HomePageState extends State<HomePage> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: const Text("My Expenses"),
+          title: const Text("Minhas despesas"),
           actions: [
             IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.add),
-              color: Colors.white,
+              onPressed: () => _onShowModalTransactionForm(context),
+              icon: const Icon(Icons.add),
             )
           ],
         ),
         body: Column(
           children: [
-            const SizedBox(
-              height: 50,
+            SizedBox(
+              height: 120,
               width: double.infinity,
-              child: Card(
-                elevation: 4,
-                child: Text(
-                  "Gráfico",
-                  textAlign: TextAlign.center,
-                ),
-              ),
+              child: ChartCardWidget(transactions: _recentTransactions),
             ),
             Expanded(
               flex: 1,
               child: SizedBox(
                 height: double.infinity,
                 width: double.infinity,
-                child: ListView.builder(
-                  reverse: true,
-                  itemCount: _transactions.length,
-                  itemBuilder: (context, index) {
-                    var transaction = _transactions[index];
-                    return CardTransactionWidget(
-                        value: transaction.value,
-                        date: transaction.date,
-                        title: transaction.title);
-                  },
-                ),
+                child: _transactions.isNotEmpty
+                    ? ListView.builder(
+                        itemCount: _transactions.length,
+                        itemBuilder: (context, index) {
+                          var transaction = _transactions[index];
+                          return CardTransactionWidget(
+                              value: transaction.value,
+                              date: transaction.date,
+                              title: transaction.title);
+                        },
+                      )
+                    : const Center(
+                        child: Text("Nenhuma despesa cadastrada."),
+                      ),
               ),
             ),
-            TransactionFormWidget(addTransaction: addTransaction)
           ],
         ),
         floatingActionButton: FloatingActionButton(
-          child: Icon(
+          onPressed: () => _onShowModalTransactionForm(context),
+          child: const Icon(
             Icons.add,
-            color: Colors.white,
           ),
-          onPressed: () {},
-          backgroundColor: Colors.blue,
         ),
       ),
     );

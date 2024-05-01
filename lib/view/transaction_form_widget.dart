@@ -34,7 +34,7 @@ class _TransactionFormWidgetState extends State<TransactionFormWidget> {
   Widget build(BuildContext context) {
     return Card(
       child: Container(
-        height: 200,
+        height: double.infinity,
         width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
         child: SingleChildScrollView(
@@ -46,7 +46,7 @@ class _TransactionFormWidgetState extends State<TransactionFormWidget> {
                   key: _titleKey,
                   controller: _titleController,
                   decoration: const InputDecoration(
-                    labelText: 'Title',
+                    labelText: 'Descrição',
                     hintText: 'Camisa Azul',
                     border: OutlineInputBorder(),
                   ),
@@ -64,7 +64,7 @@ class _TransactionFormWidgetState extends State<TransactionFormWidget> {
                   key: _valueKey,
                   controller: _valueController,
                   decoration: const InputDecoration(
-                    labelText: 'Value',
+                    labelText: 'Valor R\$',
                     hintText: '10.99',
                     border: OutlineInputBorder(),
                   ),
