@@ -56,8 +56,9 @@ class ChartCardWidget extends StatelessWidget {
           return ChartBarWidget(
             label: transaction['day'].toString(),
             value: double.tryParse(transaction['value'].toString()) ?? 0.00,
-            percente:
-                (double.tryParse(transaction['value'].toString()) ?? 0.00) /
+            percente: _weekTotalTransaction == 0
+                ? 0
+                : (double.tryParse(transaction['value'].toString()) ?? 0.00) /
                     _weekTotalTransaction,
             dayActual: bool.tryParse(transaction['actual'].toString()) ?? false,
           );

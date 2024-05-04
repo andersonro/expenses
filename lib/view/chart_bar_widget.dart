@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 
 class ChartBarWidget extends StatelessWidget {
@@ -29,7 +27,7 @@ class ChartBarWidget extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4),
-          Container(
+          SizedBox(
             height: 50,
             width: 10,
             child: Stack(

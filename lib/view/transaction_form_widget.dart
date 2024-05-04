@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 
 class TransactionFormWidget extends StatefulWidget {
-  final void Function(String, double) addTransaction;
+  final void Function(String, double, DateTime) addTransaction;
 
   const TransactionFormWidget({super.key, required this.addTransaction});
 
@@ -16,18 +17,36 @@ class _TransactionFormWidgetState extends State<TransactionFormWidget> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<FormFieldState> _titleKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> _valueKey = GlobalKey<FormFieldState>();
+  DateTime _selectedDate = DateTime.now();
 
   void _onSubmitForm() {
     if (_formKey.currentState!.validate()) {
       var title = _titleController.text;
       var value = double.tryParse(_valueController.text) ?? 0.0;
-      widget.addTransaction(title, value);
+
+      widget.addTransaction(title, value, _selectedDate);
 
       _titleController.clear();
       _valueController.clear();
       _formKey.currentState!.reset();
       setState(() {});
     }
+  }
+
+  _showModalDatePicker() {
+    showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2019),
+      lastDate: DateTime.now(),
+    ).then((pickedDate) {
+      if (pickedDate == null) {
+        return;
+      }
+      setState(() {
+        _selectedDate = pickedDate;
+      });
+    });
   }
 
   @override
@@ -81,10 +100,30 @@ class _TransactionFormWidgetState extends State<TransactionFormWidget> {
                     return null;
                   },
                 ),
+                const SizedBox(height: 6),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        _selectedDate == null
+                            ? 'Nenhuma data selecionada.'
+                            : 'Data selecionada ${DateFormat('dd/MM/yyyy').format(_selectedDate)}',
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        _showModalDatePicker();
+                      },
+                      icon: const Icon(Icons.calendar_month_outlined),
+                      color: Theme.of(context).primaryColor,
+                    )
+                  ],
+                ),
+                const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    TextButton(
+                    ElevatedButton(
                       onPressed: _onSubmitForm,
                       child: const Text('Nova Transação'),
                     )
