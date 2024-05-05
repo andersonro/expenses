@@ -32,10 +32,10 @@ class ChartCardWidget extends StatelessWidget {
       //DateFormat.E().format(weekDay)[0] - dia da semana primeira letra
       return {
         'day': DateFormat('dd/MM').format(weekDay),
-        'value': totalSum * 5,
+        'value': totalSum,
         'actual': _compareOnlyByDate(weekDay, DateTime.now()),
       };
-    });
+    }).reversed.toList();
   }
 
   double get _weekTotalTransaction {
@@ -46,23 +46,26 @@ class ChartCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 4,
-      margin: const EdgeInsets.all(10),
-      child: ListView(
-        reverse: true,
-        scrollDirection: Axis.horizontal,
-        children: _groupedTransactions.map((transaction) {
-          return ChartBarWidget(
-            label: transaction['day'].toString(),
-            value: double.tryParse(transaction['value'].toString()) ?? 0.00,
-            percente: _weekTotalTransaction == 0
-                ? 0
-                : (double.tryParse(transaction['value'].toString()) ?? 0.00) /
-                    _weekTotalTransaction,
-            dayActual: bool.tryParse(transaction['actual'].toString()) ?? false,
-          );
-        }).toList(),
+    return SizedBox(
+      width: double.infinity,
+      child: Card(
+        elevation: 4,
+        margin: const EdgeInsets.all(10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: _groupedTransactions.map((transaction) {
+            return ChartBarWidget(
+              label: transaction['day'].toString(),
+              value: double.tryParse(transaction['value'].toString()) ?? 0.00,
+              percente: _weekTotalTransaction == 0
+                  ? 0
+                  : (double.tryParse(transaction['value'].toString()) ?? 0.00) /
+                      _weekTotalTransaction,
+              dayActual:
+                  bool.tryParse(transaction['actual'].toString()) ?? false,
+            );
+          }).toList(),
+        ),
       ),
     );
   }
